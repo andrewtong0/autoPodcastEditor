@@ -12,6 +12,8 @@ SAMPLE_RATE = 24                            # Number of samples to take per seco
 THRESHOLD = 5                               # Required # of consecutive highest indices needed to take priority
 EXCEEDS_BY = 4                              # Percentage (in decimal form) other clip(s) must exceed volume by to overtake
 
+NO_OVERLAP_AUDIO = True                     # Restricts audio overlapping (False = overlap audio)
+
 # HELPER FUNCTIONS
 
 # TAKES RAW WAVEFORM DATA AND CREATES INTEGER WAVEFORM ARRAY
@@ -111,6 +113,7 @@ outputArray = compareAudioArrays(audioDataArrays)
 
 # Utilizes outputArray to determine which clips should be split and inserted where
 outputClipList = []
+audioClipList = []  # Only used if OVERLAP_AUDIO is set to 1
 counter = 0
 prevPriority = -1
 prevEndPt = -1
@@ -122,12 +125,20 @@ while counter < len(outputArray):
     # If the 'priority clip' is different than previous, finalize previous clip and add to clip list
     elif prevPriority != outputArray[counter]:
         print(str(counter) + " [" + str(prevPriority) + "] || SPLIT_PT: " + "start: " + str(prevEndPt) + " end: " + str(counter/SAMPLE_RATE))
-        outputClipList.append(VideoFileClip(INPUT_FOLDER + INPUT_FILES[prevPriority], audio=True).subclip(prevEndPt, counter/SAMPLE_RATE))
+        outputClipList.append(VideoFileClip(INPUT_FOLDER + INPUT_FILES[prevPriority], audio=NO_OVERLAP_AUDIO).subclip(prevEndPt, counter/SAMPLE_RATE))
         prevPriority = outputArray[counter]
         prevEndPt = counter/SAMPLE_RATE
     counter += 1
 print(str(counter) + " [" + str(prevPriority) + "] || SPLIT_PT: " + "start: " + str(prevEndPt) + " end: " + str(counter/SAMPLE_RATE))
-outputClipList.append(VideoFileClip(INPUT_FOLDER + INPUT_FILES[prevPriority], audio=True).subclip(prevEndPt, (counter - 1)/SAMPLE_RATE))
+outputClipList.append(VideoFileClip(INPUT_FOLDER + INPUT_FILES[prevPriority], audio=NO_OVERLAP_AUDIO).subclip(prevEndPt, (counter - 1)/SAMPLE_RATE))
 # Concatenate clips and output
 videoOutput = concatenate_videoclips(outputClipList)
-videoOutput.write_videofile(OUTPUT_FOLDER + "output-SR" + str(SAMPLE_RATE) + "-T" + str(THRESHOLD) + "-EX" + str(EXCEEDS_BY) + ".mp4")
+
+# If audio should be overlapped, create an audio file with all overlapped and mix with video
+if not NO_OVERLAP_AUDIO:
+    for wavFileIndex in range(len(INPUT_FILES)):
+        audioClipList.append(AudioFileClip(TEMP_FOLDER + "audio" + str(wavFileIndex) + ".wav"))
+    audioOutput = CompositeAudioClip(audioClipList)
+    videoOutput = videoOutput.set_audio(audioOutput)
+
+videoOutput.write_videofile(OUTPUT_FOLDER + "output-SR" + str(SAMPLE_RATE) + "-T" + str(THRESHOLD) + "-EX" + str(EXCEEDS_BY) + "-OA" + str(int(NO_OVERLAP_AUDIO)) + ".mp4")
