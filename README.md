@@ -2,7 +2,7 @@
 A program made for video podcasts to expedite the editing process by automatically switching video clips based on who is talking
 
 ### See it in action!
-[![Demo Video](https://imgur.com/a/6fG3Nd2)](https://www.youtube.com/watch?v=kMJ4Bx4BBBo&feature=youtu.be)
+[![Demo Video](https://i.imgur.com/ClN1S6f.png)](https://www.youtube.com/watch?v=kMJ4Bx4BBBo&feature=youtu.be)
 
 Made a short video explaining what autoPodcastEditor does with examples (9:43).
 Timestamps
