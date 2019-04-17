@@ -1,6 +1,19 @@
 # autoPodcastEditor
 A program made for video podcasts to expedite the editing process by automatically switching video clips based on who is talking
 
+### See it in action!
+[![Demo Video](https://imgur.com/a/6fG3Nd2)](https://www.youtube.com/watch?v=kMJ4Bx4BBBo&feature=youtu.be)
+
+Made a short video explaining what autoPodcastEditor does with examples (9:43).
+Timestamps
+- 0:00 - What it does and why
+- 2:30 - Introduction to example clips
+- 3:40 - First input clip display
+- 4:27 - Second input clip display
+- 5:35 - Quick explanation on global variables (sample rate, tolerance, exceed req. no audio overlap)
+- 6:57 - First example of program combining clips (audio overlap)
+- 8:19 - Second example of program combining clips (no audio overlap)
+
 ### What it does and why
 - Many modern video podcasts have cameras pointed at each participant, which makes the editing process long and tedious. The process of selecting whose camera to show when they're talking is a chore that could be done autonomously. This program aims to solve that.
 - autoPodcastEditor exports a final video clip that switches between the cameras of each podcast participant depending on who's talking to make the editing process a breeze.
