@@ -11,8 +11,12 @@ OUTPUT_FOLDER = 'output/'                   # Output folder name
 SAMPLE_RATE = 24                            # Number of samples to take per second to check volume level
 THRESHOLD = 5                               # Required # of consecutive highest indices needed to take priority
 EXCEEDS_BY = 4                              # Percentage (in decimal form) other clip(s) must exceed volume by to overtake
+NO_OVERLAP_AUDIO = False                    # Restricts audio overlapping (False = overlap audio)
 
-NO_OVERLAP_AUDIO = True                     # Restricts audio overlapping (False = overlap audio)
+
+# INTERNAL GLOBALS (DO NOT TOUCH)
+checkpoints = []  # Global storing tuples of array length + associated index, sorted from min-max by array length
+checkpoint_counter = 0 # Determines which checkpoint currently at
 
 # HELPER FUNCTIONS
 
@@ -42,6 +46,7 @@ def compareAudioArrays(audioArrays):
     outputArray = []
 
     audioArrays = normalizeArrays(audioArrays)  # Set arrays to equal lengths by concatenating zeroes
+    
     while counter < len(audioArrays[0]):
         consecutiveArray = returnHighestIndex(audioArrays, counter, priorityArray)  # Find index of loudest clip
         # If loudest clip is a different one than the previous loudest clip, add 1 to consecutive counter
@@ -53,6 +58,9 @@ def compareAudioArrays(audioArrays):
         # If the overriding loudest clip has been louder >= THRESHOLD # of times, replace it
         if (consecutiveCount >= THRESHOLD):
             priorityArray = consecutiveArray
+        for checkpoint in checkpoints:
+            if checkpoint == counter:
+                priorityArray = consecutiveArray
         outputArray.append(priorityArray)
         counter += 1
     # Write output data to text file (for debugging)
@@ -92,6 +100,7 @@ def normalizeArrays(audioArrays):
     for array in audioArrays:
         if len(array) > maxArrayLen:
             maxArrayLen = len(array)
+        # checkpoints.append(len(array))
     # Fill shorter arrays with trailing zeroes
     for array in audioArrays:
         for c in range(maxArrayLen - len(array)):
