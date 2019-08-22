@@ -36,6 +36,13 @@ Timestamps
 - All video clips must be synced at the start (i.e. synced at time = 0s) differing lengths of clips is fine, though (longer clips will override)
 - Does not currently support separate video + audio clips (planning on adding support soon)
 - Plan to add an option overlapping audio so you can hear audio from all clips simultaneously (mainly for podcasts where multiple people may be talking at once, since the program's main purpose is video switching)
+- No testing has been done for quality retainment and file size - unsure whether quality is dropped via the script or if there is a maximum file size limit
+
+Clips and audio must already be set to right startpoint 
+Quality testing
+Bound SAMPLE_RATE positive and less than or equal to native rate
+
+
 
 ### Compatibility
 - Confirmed working on Windows 10, have not confirmed on other operating systems
